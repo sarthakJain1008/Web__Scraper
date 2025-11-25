@@ -1,0 +1,27 @@
+{
+  "name": "etsy-scraper-apify",
+  "version": "1.0.0",
+  "description": "Etsy scraper using Apify API with CSV categories and MongoDB storage",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "node test.js",
+    "query": "node query-db.js",
+    "verify": "node verify-token.js"
+  },
+  "keywords": [
+    "etsy",
+    "scraper",
+    "apify",
+    "mongodb",
+    "csv"
+  ],
+  "dependencies": {
+    "apify-client": "^2.8.2",
+    "csv-parse": "^5.5.3",
+    "mongodb": "^6.3.0",
+    "dotenv": "^16.3.1"
+  }
+}

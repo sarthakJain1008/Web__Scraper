@@ -1,0 +1,18 @@
+node_modules/
+.env
+# Log files
+logs/
+*.log
+nohup.out
+apify_storage/
+.DS_Store
+*.log
+# Keep the sample CSV but ignore user's actual CSV if they rename it
+# Ignore backup .env files
+.env.*
+
+# Ignore text files that might contain keys
+*.txt
+
+# Ignore large data exports
+etsy_listings_export.csv
