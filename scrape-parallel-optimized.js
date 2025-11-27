@@ -12,7 +12,7 @@ dotenv.config();
 const BATCH_SIZE = 5; // URLs per API call
 const DELAY_BETWEEN_CALLS = 2000; // 2 seconds between calls
 const MAX_RETRIES = 3;
-const NUM_APIS = 10; // Total number of API keys
+const NUM_WORKERS = parseInt(process.env.NUM_WORKERS || '1', 10); // Get number of active workers
 
 /**
  * Sleep helper
@@ -78,17 +78,18 @@ async function optimizedParallelScrape() {
     console.log(`✅ Fetched ${unprocessedListings.length.toLocaleString()} unprocessed listings`);
     console.log('');
 
-    // Divide unprocessed listings among 10 APIs
-    const listingsPerApi = Math.ceil(unprocessedListings.length / NUM_APIS);
-    const startIndex = apiKeyIndex * listingsPerApi;
-    const endIndex = Math.min(startIndex + listingsPerApi, unprocessedListings.length);
+    // Divide unprocessed listings among the active workers
+    const listingsPerWorker = Math.ceil(unprocessedListings.length / NUM_WORKERS);
+    const workerIndex = parseInt(process.env.WORKER_ID || '0', 10); // A unique ID for each worker process
+    const startIndex = workerIndex * listingsPerWorker;
+    const endIndex = Math.min(startIndex + listingsPerWorker, unprocessedListings.length);
     
     // Get this API's assigned chunk
     const myListings = unprocessedListings.slice(startIndex, endIndex);
 
     console.log('📊 Assignment for this API:');
     console.log(`  Total unprocessed: ${unprocessedListings.length.toLocaleString()}`);
-    console.log(`  Per API: ${listingsPerApi.toLocaleString()}`);
+    console.log(`  Per Worker: ${listingsPerWorker.toLocaleString()}`);
     console.log(`  My range: ${startIndex.toLocaleString()} - ${endIndex.toLocaleString()}`);
     console.log(`  My count: ${myListings.length.toLocaleString()} listings`);
     console.log('');

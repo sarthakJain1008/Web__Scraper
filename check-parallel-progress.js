@@ -41,10 +41,11 @@ async function checkProgress() {
     console.log('📋 Progress by API Key:');
     console.log('━'.repeat(70));
     
-    const NUM_APIS = 10; // Total API keys
-    const LISTINGS_PER_API = 29071;
+    // Get a distinct list of all API indexes that have been used
+    const usedApiIndexes = await collection.distinct('detailsScrapedByApi');
     
-    for (let apiIndex = 0; apiIndex < NUM_APIS; apiIndex++) {
+    for (const apiIndex of usedApiIndexes.sort((a, b) => a - b)) {
+      if (apiIndex === null) continue; // Skip any listings that weren't marked with an API
       const apiProcessed = await collection.countDocuments({
         detailsScrapedByApi: apiIndex
       });
@@ -54,12 +55,12 @@ async function checkProgress() {
         tags: { $exists: true, $ne: [] }
       });
       
-      const progress = (apiProcessed / LISTINGS_PER_API) * 100;
+      const progress = (apiProcessed / total) * 100;
       const progressBar = '█'.repeat(Math.floor(progress / 5)) + '░'.repeat(20 - Math.floor(progress / 5));
       
       console.log(`\nAPI ${apiIndex + 1}:`);
       console.log(`  ${progressBar} ${progress.toFixed(1)}%`);
-      console.log(`  Processed: ${apiProcessed.toLocaleString()} / ${LISTINGS_PER_API.toLocaleString()}`);
+      console.log(`  Processed: ${apiProcessed.toLocaleString()}`);
       console.log(`  With tags: ${apiWithTags.toLocaleString()}`);
       
       if (apiProcessed > 0) {

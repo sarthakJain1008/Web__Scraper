@@ -20,7 +20,7 @@ if ! git diff-index --quiet HEAD -- README.md; then
   # Commit the changes with a standardized message
   git commit -m "Docs: Auto-update scraping progress in README"
 
-  # Stash any other local changes, pull from remote, then re-apply
+  # Stash any local changes, pull from remote, then re-apply stashed changes
   git stash
   git pull --rebase origin main
   git stash pop || true
