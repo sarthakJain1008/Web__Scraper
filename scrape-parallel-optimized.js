@@ -248,6 +248,21 @@ async function optimizedParallelScrape() {
           } else {
             console.error(`  ❌ Failed after ${MAX_RETRIES} retries, skipping batch`);
             errorCount++;
+            
+            // Mark the failed batch as processed to avoid retrying
+            for (const listing of batch) {
+              await collection.updateOne(
+                { listing_id: listing.listing_id },
+                { 
+                  $set: { 
+                    detailsScrapedByApi: apiKeyIndex,
+                    detailsScrapedAt: new Date(),
+                    detailsScrapeFailed: true,
+                    optimizedScraper: true
+                  } 
+                }
+              );
+            }
           }
         }
       }
